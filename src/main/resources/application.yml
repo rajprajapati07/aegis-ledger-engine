@@ -1,0 +1,34 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: aegis-ledger-engine
+  datasource:
+    url: ${AEGIS_DB_URL:jdbc:postgresql://localhost:5432/aegis}
+    username: ${AEGIS_DB_USER:aegis}
+    password: ${AEGIS_DB_PASSWORD:aegis}
+    hikari:
+      # Postings hold row locks for a few ms; more connections than cores
+      # just means more lock waiters. Tune with the bench, not by guessing.
+      maximum-pool-size: ${AEGIS_DB_POOL:32}
+      connection-timeout: 2000
+  flyway:
+    enabled: true
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+    default-property-inclusion: non_null
+
+aegis:
+  clock:
+    max-offset-ms: 500
+  idempotency:
+    ttl-hours: 168          # 7 days, per the SRS
+  posting:
+    lock-timeout-ms: 2000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus

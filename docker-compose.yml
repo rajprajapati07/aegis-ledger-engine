@@ -1,0 +1,35 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: aegis
+      POSTGRES_USER: aegis
+      POSTGRES_PASSWORD: aegis
+    # synchronous_commit stays ON. Turning it off is the classic way to make a
+    # ledger benchmark look fast while quietly giving up RPO = 0.
+    command: ["postgres", "-c", "max_connections=300", "-c", "shared_buffers=512MB"]
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./deploy/create-test-db.sql:/docker-entrypoint-initdb.d/01-create-test-db.sql:ro
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aegis -d aegis"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  ledger:
+    build: .
+    environment:
+      AEGIS_DB_URL: jdbc:postgresql://postgres:5432/aegis
+      AEGIS_DB_USER: aegis
+      AEGIS_DB_PASSWORD: aegis
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pgdata:

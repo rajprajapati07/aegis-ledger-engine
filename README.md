@@ -139,7 +139,8 @@ One thing worth knowing: the SRS's own example transaction debits a brand-new li
 aegis-ledger-engine/
 ├── docs/
 │   ├── ARCHITECTURE.md          full design: sharding, 2PC, hot accounts, HLC, capacity, HA/DR
-│   └── ARCHITECTURE_REVIEW.md   15 findings on the SRS, ranked by blast radius
+│   ├── ARCHITECTURE_REVIEW.md   15 findings on the SRS, ranked by blast radius
+│   └── DESIGN_GUIDE.md          HLD, LLD and DB design in plain language, with trade-offs
 ├── src/main/java/com/aegis/ledger/
 │   ├── core/                    no framework, no database: validation, amounts, HLC, fingerprints
 │   ├── store/                   PostingEngine (all money movement), LedgerStore (reads, setup)
@@ -174,3 +175,4 @@ The core and store packages don't import Spring. The engine takes a `DataSource`
 
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — how the full system meets 2M TPS / p99 25 ms / RPO 0, and what it costs
 - [`docs/ARCHITECTURE_REVIEW.md`](docs/ARCHITECTURE_REVIEW.md) — where the SRS contradicts itself, and what I'd change before building anything
+- [`docs/DESIGN_GUIDE.md`](docs/DESIGN_GUIDE.md) — HLD, LLD and DB design in plain language: every component and decision, with examples and trade-offs
